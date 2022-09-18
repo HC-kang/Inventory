@@ -18,6 +18,12 @@ class User(Base):
         back_populates="submitter",
         uselist=True,
     )
+    storages = relationship(
+        "Storage",
+        cascade="all,delete-orphan",
+        back_populates="user",
+        uselist=True,
+    )
 
     # New addition
     hashed_password = Column(String(256), nullable=False)
