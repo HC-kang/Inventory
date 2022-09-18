@@ -21,13 +21,13 @@ RECIPE_SUBREDDITS = ["recipes", "easyrecipes", "TopSecretRecipes"]
 
 
 @router.get("/{recipe_id}", status_code=200, response_model=Recipe)
-def fetch_recipe(
+async def fetch_recipe(
     *,
     recipe_id: int,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Fetch a single recipe by ID
+    레시피를 조회합니다.
     """
     result = crud.recipe.get(db=db, id=recipe_id)
     if not result:
@@ -41,13 +41,13 @@ def fetch_recipe(
 
 
 @router.get("/my-recipes/", status_code=200, response_model=RecipeSearchResults)
-def fetch_user_recipes(
+async def fetch_user_recipes(
     *,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user),
 ) -> Any:
     """
-    Fetch all recipes for a user
+    로그인한 유저의 모든 레시피를 가져옵니다.
     """
     recipes = current_user.recipes
     print(recipes)
@@ -58,14 +58,14 @@ def fetch_user_recipes(
 
 
 @router.get("/search/", status_code=200, response_model=RecipeSearchResults)
-def search_recipes(
+async def search_recipes(
     *,
     keyword: str = Query(None, min_length=3, example="chicken"),
     max_results: Optional[int] = 10,
     db: Session = Depends(deps.get_db),
 ) -> dict:
     """
-    Search for recipes based on label keyword
+    키워드 검색 결과에 따른 모든 레시피를 가져옵니다.
     """
     recipes = crud.recipe.get_multi(db=db, limit=max_results)
     results = filter(lambda recipe: keyword.lower() in recipe.label.lower(), recipes)
@@ -74,14 +74,14 @@ def search_recipes(
 
 
 @router.post("/", status_code=201, response_model=Recipe)
-def create_recipe(
+async def create_recipe(
     *,
     recipe_in: RecipeCreate,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user),
 ) -> dict:
     """
-    Create a new recipe in the database.
+    새로운 레시피를 생성합니다.
     """
     if recipe_in.submitter_id != current_user.id:
         raise HTTPException(
@@ -92,15 +92,15 @@ def create_recipe(
     return recipe
 
 
-@router.put("/", status_code=201, response_model=Recipe)
-def update_recipe(
+@router.put("/", status_code=200, response_model=Recipe)
+async def update_recipe(
     *,
     recipe_in: RecipeUpdateRestricted,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user),
 ) -> dict:
     """
-    Update recipe in the database.
+    레시피를 업데이트합니다.
     """
     recipe = crud.recipe.get(db, id=recipe_in.id)
     if not recipe:
@@ -145,7 +145,7 @@ async def fetch_ideas_async(
 
 
 @router.get("/ideas/")
-def fetch_ideas(reddit_client: RedditClient = Depends(deps.get_reddit_client)) -> dict:
+async def fetch_ideas(reddit_client: RedditClient = Depends(deps.get_reddit_client)) -> dict:
     return {
         key: reddit_client.get_reddit_top(subreddit=key) for key in RECIPE_SUBREDDITS
     }

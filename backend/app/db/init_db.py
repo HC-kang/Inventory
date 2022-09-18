@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app import crud, schemas
 from app.db import base  # noqa: F401
 from app.core.config import settings
+from app.enums.user_approve_status_flag import UserApproveStatusFlag
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +45,18 @@ def init_db(db: Session) -> None:
         user = crud.user.get_by_email(db, email=settings.FIRST_SUPERUSER)
         if not user:
             user_in = schemas.UserCreate(
-                full_name="Initial Super User",
-                email=settings.FIRST_SUPERUSER,
-                is_superuser=True,
+                name="Ford",
                 password=settings.FIRST_SUPERUSER_PW,
+                email=settings.FIRST_SUPERUSER,
+                phone="010-0000-0000",
+                level=10,
+                point=100_000_000,
+                business_class="business_class",
+                business_name="business_name",
+                business_president="ford",
+                is_notification=True,
+                approve_status_flag=UserApproveStatusFlag.A,
+                is_superuser=True,
             )
             user = crud.user.create(db, obj_in=user_in)  # noqa: F841
         else:
