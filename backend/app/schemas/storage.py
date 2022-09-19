@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, HttpUrl
 
 from typing import Sequence
@@ -25,6 +26,7 @@ class StorageUpdateRestricted(BaseModel):
 class StorageInDBBase(StorageBase):
     id: int
     user_id: int
+    deleted_at: datetime
 
     class Config:
         orm_mode = True

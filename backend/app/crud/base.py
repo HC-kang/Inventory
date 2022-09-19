@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from fastapi.encoders import jsonable_encoder
@@ -64,3 +65,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.delete(obj)
         db.commit()
         return obj
+
+    def softDelete(self, db: Session, *, id: int) -> ModelType:
+        obj = db.query(self.model).get(id)
+        db_obj = type(obj)
+        setattr(db_obj, "deleted_at", datetime.now())
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj

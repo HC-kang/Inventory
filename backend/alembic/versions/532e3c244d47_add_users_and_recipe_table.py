@@ -1,8 +1,8 @@
 """Add users and recipe table
 
-Revision ID: 262e6158e7c5
+Revision ID: 532e3c244d47
 Revises: 
-Create Date: 2022-09-19 07:26:50.507106
+Create Date: 2022-09-20 08:24:13.278810
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '262e6158e7c5'
+revision = '532e3c244d47'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -53,6 +53,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=256), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
