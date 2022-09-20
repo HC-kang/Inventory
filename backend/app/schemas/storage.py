@@ -11,10 +11,12 @@ class StorageBase(BaseModel):
 class StorageCreate(StorageBase):
     name: str
     user_id: int
+    parent_id: Optional[int]
 
 
 class StorageUpdate(StorageBase):
     id: int
+    parent_id: Optional[int]
 
 
 class StorageUpdateRestricted(BaseModel):
@@ -31,7 +33,8 @@ class StorageSoftDelete(BaseModel):
 class StorageInDBBase(StorageBase):
     id: int
     user_id: int
-    deleted_at: datetime
+    parent_id: Optional[int]
+    deleted_at: Optional[datetime]
 
     class Config:
         orm_mode = True

@@ -30,6 +30,27 @@ RECIPES = [
     },
 ]
 
+STORAGES = [
+    {
+        "name": "my_first_storage",
+        "user_id": 1,
+        "parent_id": None,
+        "deleted_at": None,
+    },
+    {
+        "name": "my_home",
+        "user_id": 1,
+        "parent_id": 1,
+        "deleted_at": None,
+    },
+    {
+        "name": "my_office",
+        "user_id": 1,
+        "parent_id": 1,
+        "deleted_at": None,
+    },
+]
+
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -73,6 +94,14 @@ def init_db(db: Session) -> None:
                     submitter_id=user.id,
                 )
                 crud.recipe.create(db, obj_in=recipe_in)
+        if not user.storages:
+            for storage in STORAGES:
+                storage_in = schemas.StorageCreate(
+                    name=storage["name"],
+                    user_id=storage["user_id"],
+                    parent_id=storage["parent_id"],
+                )
+                crud.storage.create(db, obj_in=storage_in)
     else:
         logger.warning(
             "Skipping creating superuser.  FIRST_SUPERUSER needs to be "

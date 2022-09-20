@@ -6,7 +6,7 @@ from app.db.base_class import Base
 
 class Recipe(Base):
     __tablename__ = "recipes"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     label = Column(String(256), nullable=False)
     url = Column(String(256), index=True, nullable=True)

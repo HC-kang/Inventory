@@ -8,7 +8,7 @@ from app.enums.user_approve_status_flag import UserApproveStatusFlag
 
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(256), nullable=True)
     hashed_password = Column(String(256), nullable=False)
