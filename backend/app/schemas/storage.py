@@ -1,7 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel, HttpUrl
 
-from typing import Sequence
+from typing import Optional, Sequence
 
 
 class StorageBase(BaseModel):
@@ -20,6 +20,11 @@ class StorageUpdate(StorageBase):
 class StorageUpdateRestricted(BaseModel):
     id: int
     name: str
+
+
+class StorageSoftDelete(BaseModel):
+    id: int
+    deleted_at: Optional[datetime]
 
 
 # Properties shared by models stored in DB

@@ -66,10 +66,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.commit()
         return obj
 
-    def softDelete(self, db: Session, *, id: int) -> ModelType:
-        obj = db.query(self.model).get(id)
-        db_obj = type(obj)
-        setattr(db_obj, "deleted_at", datetime.now())
+    def soft_delete(
+        self,
+        db: Session,
+        *,
+        db_obj: ModelType,
+    ) -> ModelType:
+        
+        setattr(db_obj, "deleted_at", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)

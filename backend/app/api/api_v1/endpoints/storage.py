@@ -11,6 +11,7 @@ from app.schemas.storage import (
     Storage,
     StorageCreate,
     StorageSearchResults,
+    StorageSoftDelete,
     StorageUpdateRestricted,
 )
 from app.models.user import User
@@ -93,22 +94,22 @@ async def update_storage(
     return updated_storage
 
 
-@router.delete("/{storage_id}", status_code=200)
+@router.delete("/", status_code=200)
 async def delete_storage(
     *,
-    storage_id: int,
+    storage_in: StorageSoftDelete,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user),
 ) -> dict:
-    storage = crud.storage.get(db, id=storage_id)
+    storage = crud.storage.get(db, id=storage_in.id)
     if not storage:
         raise HTTPException(
-            status_code=404, detail=f"{storage_id}번 저장소를 찾을 수 없습니다."
+            status_code=404, detail=f"{storage_in.id}번 저장소를 찾을 수 없습니다."
         )
     if storage.user_id != current_user.id:
         raise HTTPException(
             status_code=403, detail=f"자신의 저장소만 삭제 할 수 있습니다."
         )
     
-    deleted_storage = crud.storage.softDelete(db=db, id=storage_id)
+    deleted_storage = crud.storage.soft_delete(db=db, db_obj=storage)
     return deleted_storage
