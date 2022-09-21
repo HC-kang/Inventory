@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -28,9 +29,30 @@ async def fetch_storage(
     storage = crud.storage.get(db=db, id=storage_id)
     if not storage:
         raise HTTPException(status_code=404, detail=f"{storage_id}번 저장소를 찾을 수 없습니다.")
-    child_storages = crud.storage.get_by_parent(db=db, parent_id=storage_id)
-    return {"results": {"main": storage, "children": child_storages}}
-    return storage
+    storage = jsonable_encoder(storage)
+    storage["children"] = []
+    
+    def dfs(root):
+        stack = [root]
+        visited = []
+        
+        while stack:
+            n = stack.pop()
+            if n not in visited:
+                visited.append(n)
+                visiting = crud.storage.get_by_parent(db=db, parent_id=n["id"])
+                if visiting:
+                    for v in visiting:
+                        v = jsonable_encoder(v)
+                        v["children"] = []
+                        stack.append(v)
+                        n["children"].append(v)
+        return root
+    storages =  dfs(storage)
+                
+    
+        
+    return {"storages": storages}
 
 
 @router.get("/my-storages/", status_code=200, response_model=StorageSearchResults)

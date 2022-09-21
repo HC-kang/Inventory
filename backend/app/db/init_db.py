@@ -49,6 +49,42 @@ STORAGES = [
         "parent_id": 1,
         "deleted_at": None,
     },
+    {
+        "name": "거실",
+        "user_id": 1,
+        "parent_id": 2,
+        "deleted_at": None,
+    },
+    {
+        "name": "침실",
+        "user_id": 1,
+        "parent_id": 2,
+        "deleted_at": None,
+    },
+    {
+        "name": "화장실",
+        "user_id": 1,
+        "parent_id": 2,
+        "deleted_at": None,
+    },
+    {
+        "name": "서랍장",
+        "user_id": 1,
+        "parent_id": 4,
+        "deleted_at": None,
+    },
+    {
+        "name": "벽장",
+        "user_id": 1,
+        "parent_id": 4,
+        "deleted_at": None,
+    },
+    {
+        "name": "옷장",
+        "user_id": 1,
+        "parent_id": 5,
+        "deleted_at": None,
+    }
 ]
 
 
