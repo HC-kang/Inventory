@@ -26,12 +26,7 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now())
-    recipes = relationship(
-        "Recipe",
-        cascade="all,delete-orphan",
-        back_populates="submitter",
-        uselist=True,
-    )
+    
     storages = relationship(
         "Storage",
         cascade="all,delete-orphan",

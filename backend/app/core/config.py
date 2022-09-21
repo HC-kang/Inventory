@@ -40,8 +40,8 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: Optional[
         str
     ] = "mysql+pymysql://root:root@127.0.0.1:3306/test_project"
-    FIRST_SUPERUSER: EmailStr = "admin@recipeapi.com"
-    FIRST_SUPERUSER_PW: str = "test"
+    FIRST_SUPERUSER: EmailStr = "admin@admin.com"
+    FIRST_SUPERUSER_PW: str = "1qaz2wsx!@"
 
     class Config:
         case_sensitive = True
