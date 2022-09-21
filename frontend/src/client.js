@@ -81,35 +81,35 @@ class FastAPIClient {
     return client;
   }
 
-  getRecipe(recipeId) {
-    return this.apiClient.get(`/recipes/${recipeId}`);
+  getStorage(storageId) {
+    return this.apiClient.get(`/storage/${storageId}`);
   }
 
-  getRecipes(keyword) {
-    return this.apiClient.get(`/recipes/search/?keyword=${keyword}&max_results=10`).then(({data}) => {
+  getStorages(keyword) {
+    return this.apiClient.get(`/storage/search/?keyword=${keyword}&max_results=10`).then(({data}) => {
       return data;
     });
   }
 
-  getUserRecipes() {
-    return this.apiClient.get(`/recipes/my-recipes/`).then(({data}) => {
+  getUserStorages() {
+    return this.apiClient.get(`/storage/my-storages/`).then(({data}) => {
       return data;
     });
   }
 
-  createRecipe(label, url, source, submitter_id) {
-    const recipeData = {
+  createStorage(label, url, source, submitter_id) {
+    const storageData = {
       label,
       url,
       source,
       submitter_id: submitter_id,
     };
-    return this.apiClient.post(`/recipes/`, recipeData);
+    return this.apiClient.post(`/storages/`, storageData);
   }
 
 
-  deleteRecipe(recipeId) {
-    return this.apiClient.delete(`/recipes/${recipeId}`);
+  deleteStorage(storageId) {
+    return this.apiClient.delete(`/storages/${storageId}`);
   }
 }
 

@@ -1,52 +1,53 @@
-import Recipe from "../Recipe";
+import Storage from "../Storage";
 import React, {useState} from "react";
 import PopupModal from "../Modal/PopupModal";
 import FormInput from "../FormInput/FormInput";
 
-const RecipeTable = ({recipes}) => {
+const StorageTable = ({storages}) => {
 
-  const [recipeInfoModal, setRecipeInfoModal] = useState(false)
+  const [storageInfoModal, setStorageInfoModal] = useState(false)
 
     return (
       <>
         <div className="sections-list">
-          {recipes.length && (
-              recipes.map((recipe) => (
-                <Recipe showRecipeInfoModal={() => setRecipeInfoModal(recipe)} key={recipe.id} recipe={recipe}  />
+          {storages.length && (
+              storages.map((storage) => (
+                <Storage showStorageInfoModal={() => setStorageInfoModal(storage)} key={storage.id} storage={storage}  />
               ))
           )}
-          {!recipes.length && (
-              <p>No recipes found!</p>
+          {!storages.length && (
+              <p>No storages found!</p>
           )}
         </div>
-        {recipeInfoModal && <PopupModal
-						modalTitle={"Recipe Info"}
+        {storageInfoModal && <PopupModal
+						modalTitle={"Storage Info"}
 						onCloseBtnPress={() => {
-							setRecipeInfoModal(false);
+							setStorageInfoModal(false);
 						}}
 					>
 						<div className="mt-4 text-left">
+							<div>hi</div>
 							<form className="mt-5">
 								<FormInput
 									disabled
 									type={"text"}
 									name={"label"}
 									label={"Label"}
-									value={recipeInfoModal?.label}
+									value={storageInfoModal?.name}
 								/>
 								<FormInput
 									disabled
 									type={"text"}
 									name={"url"}
 									label={"Url"}
-									value={recipeInfoModal?.url}
+									value={storageInfoModal?.name}
 								/>
 								<FormInput
 									disabled
 									type={"text"}
 									name={"source"}
 									label={"Source"}
-									value={recipeInfoModal?.source}
+									value={storageInfoModal?.name}
 								/>
 							</form>
 						</div>
@@ -55,4 +56,4 @@ const RecipeTable = ({recipes}) => {
     )
 }
 
-export default RecipeTable;
+export default StorageTable;
