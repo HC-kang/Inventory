@@ -14,6 +14,7 @@ from app.schemas.storage import (
     StorageSearchResults,
     StorageSoftDelete,
     StorageUpdateRestricted,
+    StorageForService,
 )
 from app.models.user import User
 

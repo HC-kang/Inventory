@@ -50,5 +50,11 @@ class StorageInDB(StorageInDBBase):
     pass
 
 
+class StorageForService(StorageBase):
+    name: str
+    user_id: int
+    parent_id: Optional[int]
+
+
 class StorageSearchResults(BaseModel):
-    results: Sequence[Storage]
+    results: Sequence[StorageForService]
