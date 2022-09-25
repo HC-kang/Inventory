@@ -17,25 +17,25 @@ class AppSettings(BaseAppSettings):
     redoc_url: str = "/redoc"
     title: str = "FastAPI Inventory App"
     version: str = "0.0.0"
-    
-    database_url: str # FIXME:
+
+    database_url: str  # FIXME:
     max_connection_count: int = 10
     min_connection_count: int = 10
-    
+
     secret_key: SecretStr
-    
+
     api_prefix: str = "/api/v1"
-    
+
     jwt_token_prefix: str = "Token"
-    
+
     allowed_hosts: List[str] = ["*"]
-    
+
     logging_level: int = logging.INFO
     loggers: Tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
-    
+
     class Config:
         validate_assignment = True
-    
+
     @property
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {

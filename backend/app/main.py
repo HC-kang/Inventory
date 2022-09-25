@@ -15,9 +15,9 @@ BASE_PATH = Path(__file__).resolve().parent
 
 
 def get_application() -> FastAPI:
-    settings = get_app_settings();
+    settings = get_app_settings()
     settings.configure_logging()
-    
+
     application = FastAPI(**settings.fastapi_kwargs)
 
     application.add_middleware(
@@ -38,9 +38,9 @@ def get_application() -> FastAPI:
         response.headers["X-Process-Time"] = str(process_time)
         return response
 
-
     application.include_router(api_router, prefix=settings.api_prefix)
 
     return application
+
 
 app = get_application()
