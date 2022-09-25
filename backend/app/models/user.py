@@ -26,7 +26,7 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now())
-    
+
     storages = relationship(
         "Storage",
         cascade="all,delete-orphan",

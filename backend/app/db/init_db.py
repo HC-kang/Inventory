@@ -63,7 +63,7 @@ STORAGES = [
         "user_id": 1,
         "parent_id": 5,
         "deleted_at": None,
-    }
+    },
 ]
 
 

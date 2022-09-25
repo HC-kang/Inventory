@@ -31,11 +31,11 @@ async def fetch_storage(
         raise HTTPException(status_code=404, detail=f"{storage_id}번 저장소를 찾을 수 없습니다.")
     storage = jsonable_encoder(storage)
     storage["children"] = []
-    
+
     def dfs(root):
         stack = [root]
         visited = []
-        
+
         while stack:
             n = stack.pop()
             if n not in visited:
@@ -48,10 +48,9 @@ async def fetch_storage(
                         stack.append(v)
                         n["children"].append(v)
         return root
-    storages =  dfs(storage)
-                
-    
-        
+
+    storages = dfs(storage)
+
     return {"storages": storages}
 
 

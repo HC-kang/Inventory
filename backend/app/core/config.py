@@ -1,7 +1,14 @@
+from functools import lru_cache
+from typing import List, Optional, Union, Dict, Type
 import pathlib
 
 from pydantic import AnyHttpUrl, BaseSettings, EmailStr, validator
-from typing import List, Optional, Union
+
+from app.core.settings.base import AppEnvTypes, BaseAppSettings
+from app.core.settings.development import DevAppSettings
+from app.core.settings.production import ProdAppSettings
+from app.core.settings.test import TestAppSettings
+from app.core.settings.app import AppSettings
 
 
 # Project Directories
@@ -48,3 +55,17 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+environments: Dict[AppEnvTypes, Type[AppSettings]] = {
+    AppEnvTypes.dev: DevAppSettings,
+    AppEnvTypes.prod: ProdAppSettings,
+    AppEnvTypes.test: TestAppSettings,
+}
+
+
+@lru_cache
+def get_app_settings() -> AppSettings:
+    app_env = BaseAppSettings().app_env
+    config = environments[app_env]
+    return config()
