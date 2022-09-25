@@ -9,20 +9,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import crud
 from app.api import deps
 from app.api.api_v1.api import api_router
-from app.core.config import settings
+from app.core.config import get_app_settings, settings
 
 BASE_PATH = Path(__file__).resolve().parent
 
 
 def get_application() -> FastAPI:
-    settings = None;
+    settings = get_app_settings();
+    settings.configure_logging()
     
-    application = FastAPI(title="Recipe API", openapi_url=f"{settings.API_V1_STR}/openapi.json")
+    application = FastAPI(**settings.fastapi_kwargs)
 
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_origin_regex=settings.BACKEND_CORS_ORIGIN_REGEX,
+        allow_origins=settings.allowed_hosts,
+        # allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        # allow_origin_regex=settings.BACKEND_CORS_ORIGIN_REGEX,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -37,7 +39,7 @@ def get_application() -> FastAPI:
         return response
 
 
-    application.include_router(api_router, prefix=settings.API_V1_STR)
+    application.include_router(api_router, prefix=settings.api_prefix)
 
     return application
 
