@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import crud
 from app.api import deps
 from app.api.api_v1.api import api_router
-from app.core.config import get_app_settings, settings
+from app.core.config import get_app_settings
 
 BASE_PATH = Path(__file__).resolve().parent
 
