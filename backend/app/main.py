@@ -6,12 +6,9 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
-from app import crud
-from app.api import deps
 from app.api.api_v1.api import api_router
+from app.api.routes.api_v1.api import router as api_router2
 from app.core.config import get_app_settings
-
-BASE_PATH = Path(__file__).resolve().parent
 
 
 def get_application() -> FastAPI:
@@ -30,15 +27,16 @@ def get_application() -> FastAPI:
         allow_headers=["*"],
     )
 
-    @application.middleware("http")
-    async def add_process_time_header(request: Request, call_next):
-        start_time = time.time()
-        response = await call_next(request)
-        process_time = time.time() - start_time
-        response.headers["X-Process-Time"] = str(process_time)
-        return response
+    # @application.middleware("http")
+    # async def add_process_time_header(request: Request, call_next):
+    #     start_time = time.time()
+    #     response = await call_next(request)
+    #     process_time = time.time() - start_time
+    #     response.headers["X-Process-Time"] = str(process_time)
+    #     return response
 
-    application.include_router(api_router, prefix=settings.api_prefix)
+    # application.include_router(api_router, prefix=settings.api_prefix)
+    application.include_router(api_router2, prefix=settings.api_prefix)
 
     return application
 

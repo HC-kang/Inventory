@@ -1,15 +1,15 @@
-from passlib.context import CryptContext
 import bcrypt
+from passlib.context import CryptContext
 
-PWD_CONTEXT = CryptContext(schemas=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return PWD_CONTEXT.verify(plain_password, hashed_password)
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
-    return PWD_CONTEXT.hash(password)
+    return pwd_context.hash(password)
 
 
 def generate_salt() -> str:

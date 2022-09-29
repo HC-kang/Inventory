@@ -1,7 +1,7 @@
 from typing import AsyncGenerator, Callable, Type
 
-from asyncpg.pool import Pool
 from asyncpg.connection import Connection
+from asyncpg.pool import Pool
 from fastapi import Depends
 from starlette.requests import Request
 
