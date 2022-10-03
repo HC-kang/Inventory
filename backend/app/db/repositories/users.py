@@ -4,6 +4,7 @@ from app.db.queries.queries import queries
 from app.db.errors import EntityDoesNotExist
 from app.models.domain.users import User, UserInDB
 
+
 class UsersRepository(BaseRepository):
     async def get_user_by_email(self, *, email: str) -> UserInDB:
         user_row = await queries.get_user_by_email(self.connection, email=email)
@@ -31,7 +32,7 @@ class UsersRepository(BaseRepository):
     ) -> UserInDB:
         user = UserInDB(username=username, email=email)
         user.change_password(password)
-        
+
         async with self.connection.transaction():
             user_row = await queries.create_new_user(
                 self.connection,
@@ -53,7 +54,7 @@ class UsersRepository(BaseRepository):
         image: Optional[str] = None,
     ) -> UserInDB:
         user_in_db = await self.get_user_by_username(username=user.username)
-        
+
         user_in_db.username = username or user_in_db.username
         user_in_db.email = email or user_in_db.email
         user_in_db.bio = bio or user_in_db.bio

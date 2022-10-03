@@ -1,2 +1,2 @@
 class EntityDoesNotExist(Exception):
-    """ Raised when entity was not found in DB """
+    """Raised when entity was not found in DB"""

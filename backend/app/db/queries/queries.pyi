@@ -2,13 +2,11 @@ from typing import Sequence, Dict, Optional
 
 from asyncpg import Connection, Record
 
-
 class TagsQueriesMixin:
     async def get_all_tags(self, conn: Connection) -> Record: ...
     async def create_new_tags(
         self, conn: Connection, tags: Sequence[Dict[str, str]]
     ) -> None: ...
-
 
 class UserQueriesMixin:
     async def get_user_by_email(self, conn: Connection, *, email: str) -> Record: ...
@@ -37,7 +35,6 @@ class UserQueriesMixin:
         new_image: Optional[str]
     ) -> Record: ...
 
-
 class ProfilesQueriesMixin:
     async def is_user_following_for_another(
         self, conn: Connection, *, follower_username: str, following_username: str
@@ -48,7 +45,6 @@ class ProfilesQueriesMixin:
     async def unsubscribe_user_from_another(
         self, conn: Connection, *, follower_username: str, following_username: str
     ) -> None: ...
-
 
 class Queries(
     TagsQueriesMixin,

@@ -23,7 +23,8 @@ def get_repository(
     repo_type: Type[BaseRepository],
 ) -> Callable[[Connection], BaseRepository]:
     def _get_repo(
-        conn: Connection = Depends(_get_connection_from_pool)
+        conn: Connection = Depends(_get_connection_from_pool),
     ) -> BaseRepository:
         return repo_type(conn)
+
     return _get_repo

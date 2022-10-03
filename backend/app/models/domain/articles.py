@@ -13,4 +13,4 @@ class Article(IDModelMixin, DateTimeModelMixin, RWModel):
     tags: List[str]
     author: Profile
     favorited: bool
-    favorites_count:int
+    favorites_count: int

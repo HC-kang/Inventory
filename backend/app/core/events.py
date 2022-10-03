@@ -6,9 +6,10 @@ from loguru import logger
 from app.core.settings.app import AppSettings
 from app.db.events import close_db_connection, connect_to_db
 
+
 def create_start_app_handler(
     app: FastAPI,
-    settings: AppSettings,   
+    settings: AppSettings,
 ) -> Callable:
     async def start_app() -> None:
         await connect_to_db(app, settings)

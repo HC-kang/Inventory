@@ -5,7 +5,12 @@ from app.api.dependencies.database import get_repository
 from app.db.repositories.users import UsersRepository
 from app.core.settings.app import AppSettings
 from app.core.config import get_app_settings
-from app.models.schemas.users import UserInCreate, UserInLogin, UserInResponse, UserWithToken
+from app.models.schemas.users import (
+    UserInCreate,
+    UserInLogin,
+    UserInResponse,
+    UserWithToken,
+)
 from app.resources import strings
 from app.db.errors import EntityDoesNotExist
 from app.services import jwt
@@ -44,7 +49,7 @@ async def login(
             email=user.email,
             bio=user.bio,
             image=user.image,
-            token=token
+            token=token,
         )
     )
 
