@@ -15,6 +15,7 @@ from app.db.queries.tables import (
     tags as tags_table,
     users,
 )
+from app.db.errors import EntityDoesNotExist
 
 
 AUTHOR_USERNAME_ALIAS = "author_username"
@@ -181,3 +182,64 @@ class ArticlesRepository(BaseRepository):
             )
             for article_row in articles_rows
         ]
+
+    async def get_articles_for_user_feed(
+        self,
+        *,
+        user: User,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> List[Article]:
+        articles_rows = await queries.get_articles_for_feed(
+            self.connection,
+            follower_username=user.username,
+            limit=limit,
+            offset=offset,
+        )
+        return [
+            await self._get_article_from_db_record(
+                article_row=article_row,
+                slug=article_row[SLUG_ALIAS],
+                author_username=article_row[AUTHOR_USERNAME_ALIAS],
+                requested_user=user,
+            )
+            for article_row in articles_rows
+        ]
+
+    async def get_article_by_slug(
+        self,
+        *,
+        slug: str,
+        requested_user: Optional[User] = None,
+    ) -> Article:
+        article_row = await queries.get_article_by_slug(self.connection, slug=slug)
+        if article_row:
+            return await self._get_article_from_db_record(
+                article_row=article_row,
+                slug=article_row[SLUG_ALIAS],
+                author_username=article_row[AUTHOR_USERNAME_ALIAS],
+                requested_user=requested_user,
+            )
+
+        raise EntityDoesNotExist(f"article with slug {slug} does not exist")
+
+    async def get_tags_for_article_by_slug(self, *, slug: str) -> List[str]:
+        tag_rows = await queries.get_tags_for_article_by_slug(
+            self.connection,
+            slug=slug,
+        )
+        return [row["tag"] for row in tag_rows]
+
+    async def get_favorites_count_for_article_by_slug(self, *, slug: str) -> int:
+        return (
+            await queries.get_favorites_count_for_article(self.connection, slug=slug)
+        )["favorites_count"]
+
+    async def is_article_favorited_by_user(self, *, slug: str, user: User) -> bool:
+        return (
+            await queries.is_article_in_favorites(
+                self.connection,
+                username=user.username,
+                slug=slug,
+            )
+        )["favorited"]
