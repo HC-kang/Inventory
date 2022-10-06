@@ -243,3 +243,60 @@ class ArticlesRepository(BaseRepository):
                 slug=slug,
             )
         )["favorited"]
+
+    async def add_article_into_favorites(self, *, article: Article, user: User) -> None:
+        await queries.add_article_to_favorites(
+            self.connection,
+            username=user.username,
+            slug=article.slug,
+        )
+
+    async def remove_article_from_favorites(
+        self,
+        *,
+        article: Article,
+        user: User,
+    ) -> None:
+        await queries.remove_article_from_favorites(
+            self.connection,
+            username=user.username,
+            slug=article.slug
+        )
+
+    async def _get_article_from_db_record(
+        self,
+        *,
+        article_row: Record,
+        slug: str,
+        author_username: str,
+        requested_user: Optional[User],
+    ) -> Article:
+        return Article(
+            id_=article_row["id"],
+            slug=slug,
+            title=article_row["title"],
+            description=article_row["description"],
+            body=article_row["body"],
+            author=await self._profiles_repo.get_profile_by_username(
+                username=author_username,
+                requested_user=requested_user,
+            ),
+            tags=await self.get_tags_for_article_by_slug(slug=slug),
+            favorites_count=await self.get_favorites_count_for_article_by_slug(
+                slug=slug,
+            ),
+            favorited=await self.is_article_favorited_by_user(
+                slug=slug,
+                user=requested_user,
+            )
+            if requested_user
+            else False,
+            created_at=article_row["created_at"],
+            updated_at=article_row["updated_at"],
+        )
+
+    async def _link_article_with_tags(self, *, slug: str, tags: Sequence[str]) -> None:
+        await queries.add_tags_to_article(
+            self.connection,
+            [{SLUG_ALIAS: slug, "tag": tag} for tag in tags],
+        )
