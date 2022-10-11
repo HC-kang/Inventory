@@ -1,6 +1,6 @@
 from typing import Optional, Sequence, List, Union
 
-from asyncpg import Connection
+from asyncpg import Connection, Record
 from pypika import Query
 
 from app.models.domain.users import User

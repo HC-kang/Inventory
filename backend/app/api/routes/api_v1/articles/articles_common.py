@@ -73,3 +73,33 @@ async def mark_article_as_favorite(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=strings.ARTICLE_IS_ALREADY_FAVORITED,
     )
+
+
+@router.delete(
+    "/{slug}/favorite",
+    response_model=ArticleInResponse,
+    name="articles:unmarked-article-favorite",
+)
+async def remove_article_from_favorites(
+    article: Article = Depends(get_article_by_slug_from_path),
+    user: User = Depends(get_current_user_authorizer()),
+    articles_repo: ArticlesRepository = Depends(get_repository(ArticlesRepository)),
+) ->ArticleInResponse:
+    if article.favorited:
+        await articles_repo.remove_article_from_favorites(article=article, user=user)
+
+        return ArticleInResponse(
+            article=ArticleForResponse.from_orm(
+                article.copy(
+                    update={
+                        "favorited": False,
+                        "favorites_count": article.favorites_count - 1,
+                    }
+                )
+            )
+        )
+
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=strings.ARTICLE_IS_NOT_FAVORITED
+    )
