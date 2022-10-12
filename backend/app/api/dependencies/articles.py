@@ -15,6 +15,7 @@ from app.api.dependencies.database import get_repository
 from app.db.repositories.articles import ArticlesRepository
 from app.models.domain.articles import Article
 from app.resources import strings
+from app.services.articles import check_user_can_modify_article
 
 
 def get_articles_filters(
@@ -43,5 +44,16 @@ async def get_article_by_slug_from_path(
     except EntityDoesNotExist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
+            detail=strings.USER_IS_NOT_AUTHOR_OF_ARTICLE,
+        )
+
+
+def check_article_modification_permission(
+    current_article: Article = Depends(get_article_by_slug_from_path),
+    user: User = Depends(get_current_user_authorizer()),
+) -> None:
+    if not check_user_can_modify_article(current_article, user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
             detail=strings.USER_IS_NOT_AUTHOR_OF_ARTICLE,
         )
