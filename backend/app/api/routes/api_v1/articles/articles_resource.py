@@ -1,13 +1,14 @@
 from typing import Optional
 from app.api.dependencies.authentication import get_current_user_authorizer
 
-from fastapi import APIRouter, Depends, Body, HTTPException
+from fastapi import APIRouter, Depends, Body, HTTPException, Response
 from starlette import status
 
 from app.models.schemas.articles import (
     ArticleForResponse,
     ArticleInCreate,
     ArticleInResponse,
+    ArticleInUpdate,
     ListOfArticlesInResponse,
     ArticlesFilters,
     ArticleInCreate,
@@ -92,3 +93,29 @@ async def retrieve_article_by_slug(
     name="articles:update-article",
     dependencies=[Depends(check_article_modification_permissions)],
 )
+async def update_article_by_slug(
+    article_update: ArticleInUpdate = Body(..., embed=True, alias="article"),
+    current_article: Article = Depends(get_article_by_slug_from_path),
+    articles_repo: ArticlesRepository = Depends(get_repository(ArticlesRepository)),
+) -> ArticleInResponse:
+    slug = get_slug_for_article(article_update.title) if article_update.title else None
+    article = await articles_repo.update_article(
+        article=current_article,
+        slug=slug,
+        **article_update.dict(),
+    )
+    return ArticleInResponse(article=ArticleForResponse.from_orm(article))
+
+
+@router.delete(
+    "/{slug}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    name="articles:delete-article",
+    dependencies=[Depends(check_article_modification_permissions)],
+    response_class=Response,
+)
+async def delete_article_by_slug(
+    article: Article = Depends(get_article_by_slug_from_path),
+    articles_repo: ArticlesRepository = Depends(get_repository(ArticlesRepository)),
+) -> None:
+    await articles_repo.delete_article(article=article)
