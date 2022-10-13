@@ -17,6 +17,7 @@ from app.api.dependencies.articles import (
     check_article_modification_permissions,
     get_articles_filters,
     get_article_by_slug_from_path,
+    check_article_modification_permissions,
 )
 from app.models.domain.users import User
 from app.api.dependencies.database import get_repository
@@ -80,7 +81,7 @@ async def create_new_article(
     return ArticleInResponse(article=ArticleForResponse.from_orm(article))
 
 
-@router.get("/{slug}", response_model=ArticleInResponse, name="articles:get-article ")
+@router.get("/{slug}", response_model=ArticleInResponse, name="articles:get-article")
 async def retrieve_article_by_slug(
     article: Article = Depends(get_article_by_slug_from_path),
 ) -> ArticleInResponse:
