@@ -25,6 +25,5 @@ async def get_profile_by_username_from_path(
         )
     except EntityDoesNotExist:
         raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail=strings.USER_DOES_NOT_EXIST_ERROR
+            status_code=HTTP_404_NOT_FOUND, detail=strings.USER_DOES_NOT_EXIST_ERROR
         )

@@ -45,7 +45,7 @@ def _get_authorization_header_retriever(
 
 def _get_authorization_header(
     api_key: str = Security(RWAPIKeyHeader(name=HEADER_KEY)),
-    settings: AppSettings = Depends(get_app_settings)
+    settings: AppSettings = Depends(get_app_settings),
 ) -> str:
     try:
         token_prefix, token = api_key.split(" ")

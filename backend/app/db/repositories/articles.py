@@ -74,20 +74,20 @@ class ArticlesRepository(BaseRepository):
         updated_article.title = title or article.title
         updated_article.body = body or article.body
         updated_article.description = description or article.description
-        
+
         async with self.connection.transaction():
             updated_article.updated_at = await queries.update_article(
                 self.connection,
                 slug=article.slug,
-                author_username= article.author.username,
+                author_username=article.author.username,
                 new_slug=updated_article.slug,
                 new_title=updated_article.title,
                 new_body=updated_article.body,
                 new_description=updated_article.description,
             )
-        
+
         return updated_article
-    
+
     async def delete_article(self, *, article: Article) -> None:
         async with self.connection.transaction():
             await queries.delete_article(
@@ -95,7 +95,7 @@ class ArticlesRepository(BaseRepository):
                 slug=article.slug,
                 author_username=article.author.username,
             )
-    
+
     async def filter_articles(
         self,
         *,
@@ -108,10 +108,8 @@ class ArticlesRepository(BaseRepository):
     ) -> List[Article]:
         query_params: List[Union[str, int]] = []
         query_params_count = 0
-        
-        query = Query.from_(
-            articles,
-        ).select(
+
+        query = Query.from_(articles,).select(
             articles.id,
             articles.slug,
             articles.title,
@@ -121,46 +119,54 @@ class ArticlesRepository(BaseRepository):
             articles.updated_at,
             Query.from_(
                 users,
-            ).where(
-                users.id == articles.author_id,
-            ).select(
-                users.username,
-            ).as_(
-                AUTHOR_USERNAME_ALIAS,
             )
+            .where(
+                users.id == articles.author_id,
+            )
+            .select(
+                users.username,
+            )
+            .as_(
+                AUTHOR_USERNAME_ALIAS,
+            ),
         )
 
         if tag:
             query_params.append(tag)
             query_params_count += 1
-            
-            query = query.join(
-                articles_to_tags,
-            ).on(
-                (articles.id == articles_to_tags.article_id) & (
-                    articles_to_tags.tag == Query.from_(
+
+            query = query.join(articles_to_tags,).on(
+                (articles.id == articles_to_tags.article_id)
+                & (
+                    articles_to_tags.tag
+                    == Query.from_(
                         tags_table,
-                    ).where(
-                        tags_table,tag == Parameter(query_params_count),
-                    ).select(
+                    )
+                    .where(
+                        tags_table,
+                        tag == Parameter(query_params_count),
+                    )
+                    .select(
                         tags_table.tag,
                     )
                 )
             )
-        
+
         if author:
             query_params.append(author)
             query_params_count += 1
-            
-            query = query.join(
-                users,
-            ).on(
-                (articles.id == favorites.article_id) & (
-                    favorites.user_id == Query.from_(
+
+            query = query.join(users,).on(
+                (articles.id == favorites.article_id)
+                & (
+                    favorites.user_id
+                    == Query.from_(
                         users,
-                    ).where(
+                    )
+                    .where(
                         users.username == Parameter(query_params_count),
-                    ).select(
+                    )
+                    .select(
                         users.id,
                     )
                 )
@@ -170,7 +176,7 @@ class ArticlesRepository(BaseRepository):
             Parameter(query_params_count + 2),
         )
         query_params.extends([limit, offset])
-        
+
         articles_rows = await self.connection.fetch(query.get_sql(), *query_params)
 
         return [
@@ -258,9 +264,7 @@ class ArticlesRepository(BaseRepository):
         user: User,
     ) -> None:
         await queries.remove_article_from_favorites(
-            self.connection,
-            username=user.username,
-            slug=article.slug
+            self.connection, username=user.username, slug=article.slug
         )
 
     async def _get_article_from_db_record(

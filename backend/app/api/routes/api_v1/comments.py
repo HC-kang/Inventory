@@ -6,7 +6,7 @@ from starlette import status
 from app.models.schemas.comments import (
     CommentInResponse,
     ListOfCommentsInResponse,
-    CommentInCreate
+    CommentInCreate,
 )
 from app.models.domain.articles import Article
 from app.api.dependencies.articles import get_article_by_slug_from_path
@@ -16,11 +16,9 @@ from app.api.dependencies.database import get_repository
 from app.db.repositories.comments import CommentsRepository
 from app.api.dependencies.comments import (
     check_comment_modification_permissions,
-    get_comment_by_id_from_path
+    get_comment_by_id_from_path,
 )
 from app.models.domain.comments import Comment
-
-
 
 
 router = APIRouter()
@@ -53,9 +51,7 @@ async def create_comment_for_article(
     comments_repo: CommentsRepository = Depends(get_repository(CommentsRepository)),
 ) -> CommentInResponse:
     comment = await comments_repo.create_comment_for_article(
-        body=comment_create.body,
-        article=article,
-        user=user
+        body=comment_create.body, article=article, user=user
     )
     return CommentInResponse(comment=comment)
 

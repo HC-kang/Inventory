@@ -6,7 +6,7 @@ from app.models.schemas.articles import (
     ListOfArticlesInResponse,
     DEFAULT_ARTICLES_LIMIT,
     DEFAULT_ARTICLES_OFFSET,
-    ArticleForResponse
+    ArticleForResponse,
 )
 from app.models.domain.users import User
 from app.api.dependencies.authentication import get_current_user_authorizer
@@ -57,7 +57,7 @@ async def mark_article_as_favorite(
 ) -> ArticleInResponse:
     if not article.favorited:
         await articles_repo.add_article_into_favorites(article=article, user=user)
-        
+
         return ArticleInResponse(
             article=ArticleForResponse.from_orm(
                 article.copy(
@@ -84,7 +84,7 @@ async def remove_article_from_favorites(
     article: Article = Depends(get_article_by_slug_from_path),
     user: User = Depends(get_current_user_authorizer()),
     articles_repo: ArticlesRepository = Depends(get_repository(ArticlesRepository)),
-) ->ArticleInResponse:
+) -> ArticleInResponse:
     if article.favorited:
         await articles_repo.remove_article_from_favorites(article=article, user=user)
 
@@ -100,6 +100,5 @@ async def remove_article_from_favorites(
         )
 
     raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail=strings.ARTICLE_IS_NOT_FAVORITED
+        status_code=status.HTTP_400_BAD_REQUEST, detail=strings.ARTICLE_IS_NOT_FAVORITED
     )

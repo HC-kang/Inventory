@@ -3,9 +3,10 @@ from typing import Optional
 
 from pypika import Parameter as CommonParameter, Query, Table
 
+
 class Parameter(CommonParameter):
-     def __init__(self, count: int) -> None:
-         super().__init__(f"${count}")
+    def __init__(self, count: int) -> None:
+        super().__init__(f"${count}")
 
 
 class TypedTable(Table):
@@ -36,7 +37,7 @@ class Users(TypedTable):
 
 class Articles(TypedTable):
     __table__ = "articles"
-    
+
     id: int
     slug: str
     title: str
@@ -49,13 +50,13 @@ class Articles(TypedTable):
 
 class Tags(TypedTable):
     __table__ = "tags"
-    
+
     tag: str
 
 
 class ArticlesToTags(TypedTable):
     __table__ = "articles_to_tags"
-    
+
     article_id: int
     tag: str
 

@@ -33,7 +33,7 @@ async def retrieve_profile_by_username(
 async def follow_for_user(
     profile: Profile = Depends(get_profile_by_username_from_path),
     user: User = Depends(get_current_user_authorizer()),
-    profiles_repo: ProfilesRepository = Depends(get_repository(ProfilesRepository))
+    profiles_repo: ProfilesRepository = Depends(get_repository(ProfilesRepository)),
 ) -> ProfileInResponse:
     if user.username == profile.username:
         raise HTTPException(

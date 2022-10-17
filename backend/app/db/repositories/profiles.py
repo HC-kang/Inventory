@@ -18,10 +18,7 @@ class ProfilesRepository(BaseRepository):
         self._users_repo = UsersRepository(conn)
 
     async def get_profile_by_username(
-        self,
-        *,
-        username: str,
-        requested_user: Optional[UserLike]
+        self, *, username: str, requested_user: Optional[UserLike]
     ) -> Profile:
         user = await self._users_repo.get_user_by_username(username=username)
 
@@ -43,7 +40,7 @@ class ProfilesRepository(BaseRepository):
             await queries.is_user_following_for_another(
                 self.connection,
                 follower_username=requested_user.username,
-                follwing_username=target_user.username
+                follwing_username=target_user.username,
             )
         )["is_following"]
 
@@ -57,7 +54,7 @@ class ProfilesRepository(BaseRepository):
             await queries.subscribe_user_to_another(
                 self.connection,
                 follower_username=requested_user.username,
-                following_username=target_user.username
+                following_username=target_user.username,
             )
 
     async def remove_user_from_followers(

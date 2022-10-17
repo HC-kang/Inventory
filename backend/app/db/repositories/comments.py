@@ -11,18 +11,13 @@ from app.db.queries.queries import queries
 from app.db.errors import EntityDoesNotExist
 
 
-
 class CommentsRepository(BaseRepository):
     def __init__(self, conn: Connection) -> None:
         super().__init__(conn)
         self._profiles_repo = ProfilesRepository(conn)
 
     async def get_comment_by_id(
-        self,
-        *,
-        comment_id: int,
-        article: Article,
-        user: Optional[User]
+        self, *, comment_id: int, article: Article, user: Optional[User]
     ) -> Comment:
         comment_row = await queries.get_comment_by_id_and_slug(
             self.connection,
@@ -36,9 +31,7 @@ class CommentsRepository(BaseRepository):
                 requested_user=user,
             )
 
-        raise EntityDoesNotExist(
-            f"comment with id {comment_id} does not exist"
-        )
+        raise EntityDoesNotExist(f"comment with id {comment_id} does not exist")
 
     async def get_comments_for_article(
         self,
@@ -100,5 +93,5 @@ class CommentsRepository(BaseRepository):
                 requested_user=requested_user,
             ),
             created_at=comment_row["created_at"],
-            updated_at=comment_row["updated_at"]
+            updated_at=comment_row["updated_at"],
         )
